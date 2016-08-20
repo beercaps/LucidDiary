@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Lucid Diary</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="dream_timeline">Dream Timeline</string>
+    <string name="dream_archive">Dream Archive</string>
+    <string name="tools">Tools</string>
+    <string name="dream_symbols">Dream Symbols</string>
+    <string name="misc">Misc</string>
+    <string name="settings">Settings</string>
+    <string name="statistics">Statistics</string>
+</resources>
