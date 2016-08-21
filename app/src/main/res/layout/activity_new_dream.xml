@@ -83,7 +83,8 @@
                 android:id="@+id/dream_cards"
                 android:layout_below="@+id/tv_dreams"
                 android:layout_alignParentStart="true"
-                android:dividerPadding="50dp">
+                android:dividerPadding="50dp"
+                android:animateLayoutChanges="true">
             </LinearLayout>
 
 
