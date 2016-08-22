@@ -3,11 +3,8 @@ package com.luciddreamfactory.luciddiary.activities;
 
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.luciddreamfactory.luciddiary.R;
+import com.luciddreamfactory.luciddiary.model.MyDreamCard;
 
 import java.util.ArrayList;
 
@@ -28,16 +26,16 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
 
     private EditText datePicker;
     private ViewGroup linearlayout_dreamcards;
-    private ArrayList<TextInputEditText[]> dreamCardArrayList;
-    private ArrayList<View> dreamCardviewArrayList;
+    private ArrayList<MyDreamCard> myDreamCardsArrayList;
+   // private ArrayList<View> dreamCardviewArrayList;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dreamCardArrayList = new ArrayList<>();
-        dreamCardviewArrayList = new ArrayList<>();
+        myDreamCardsArrayList = new ArrayList<>();
+        //dreamCardviewArrayList = new ArrayList<>();
         setContentView(R.layout.activity_new_dream);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
 
@@ -56,7 +54,8 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         datePicker.setText(R.string.last_night);
 
         linearlayout_dreamcards = (ViewGroup) findViewById(R.id.dream_cards);
-        dreamCardArrayList.add(addDreamCard());
+        // remove myDreamCardsArrayList.add(addDreamCard());
+        addDreamCard(true);
 
 
 
@@ -67,9 +66,9 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.action_menu_cancel:
-                Log.d(TAG, "onClick: cancel"); dreamCardArrayList.add(addDreamCard());  break;
+                Log.d(TAG, "onClick: cancel"); addDreamCard(true);  break;
             case R.id.action_menu_save:
-                Log.d(TAG, "onClick: save"); readCards(dreamCardArrayList); break;
+                Log.d(TAG, "onClick: save"); readCards(myDreamCardsArrayList); break;
         }
     }
 
@@ -79,9 +78,7 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
-    private TextInputEditText[] addDreamCard(){
-        final TextInputEditText[] cardEditTexts = new TextInputEditText[2];
-
+    private void addDreamCard(boolean setFocus){
         View card = LayoutInflater.from(this).inflate(R.layout.new_dream_cardview, linearlayout_dreamcards, false);
 
         //get the EditTexts (currently position 4 and 8)
@@ -91,10 +88,12 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         //}
         // CHANGE IF ADDED MORE VIEWS TO CARDVIEW!!!!
 
-        cardEditTexts[0] = (TextInputEditText) allViews.get(4);
-        cardEditTexts[1] = (TextInputEditText) allViews.get(8);
+          final MyDreamCard myDreamCard = new MyDreamCard((TextInputEditText) allViews.get(4), (TextInputEditText) allViews.get(8));
+          myDreamCard.setMyDreamCardView(card);
+          myDreamCardsArrayList.add(myDreamCard);
 
-        ((TextInputEditText) allViews.get(8)).addTextChangedListener(new TextWatcher() {
+        ((TextInputEditText) myDreamCard.getEt_dreamContent()).addTextChangedListener(new TextWatcher() {
+            private String helper = "";
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -109,19 +108,32 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
             public void afterTextChanged(Editable editable) {
                 if (!editable.toString().equals("")){
                     //when text is entered add a new card
-                    dreamCardArrayList.add(addDreamCard());
-                }else{
-                    if (dreamCardviewArrayList.size()>0){
-                        //remove last added card
-                        linearlayout_dreamcards.removeView(dreamCardviewArrayList.get(dreamCardviewArrayList.size()-1));
-                        dreamCardviewArrayList.remove(dreamCardviewArrayList.size()-1);
+
+                    if (helper.equals("")) {
+                        helper = editable.toString();
+                        addDreamCard(false);
+                        //myDreamCardsArrayList.add(myDreamCard);
+                        Log.d(TAG, "added dreamcard to List new Size "+ myDreamCardsArrayList.size());
                     }
+
+                }else{
+                        //remove last added card if it is empty
+                        int index = myDreamCardsArrayList.indexOf(myDreamCard)+1;
+                    //check if title or content of last added card is empty -> then delete
+                        if (myDreamCardsArrayList.get(index).getEt_dreamContent().getText().toString().trim().length() == 0 &&
+                            myDreamCardsArrayList.get(index).getEt_dreamTitle().getText().toString().trim().length() == 0   ) {
+
+                            linearlayout_dreamcards.removeView(myDreamCardsArrayList.get(index).getMyDreamCardView());
+                            myDreamCardsArrayList.remove(index);
+                            Log.d(TAG, "after removed index "+(index+1));
+                        }
                 }
             }
         });
 
-        linearlayout_dreamcards.addView(card);
-        dreamCardviewArrayList.add(card);
+
+        linearlayout_dreamcards.addView(myDreamCard.getMyDreamCardView());
+
 
 
 
@@ -130,9 +142,13 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         linearlayout_dreamcards.addView(space);
 
         //set focus to title
-        allViews.get(4).requestFocus();
+        if (setFocus) {
+            myDreamCard.getEt_dreamTitle().requestFocus();
+        }
 
-    return cardEditTexts;
+
+
+
     }
 
     private ArrayList<View> getAllChildren(View v) {
@@ -160,10 +176,10 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    public void readCards(ArrayList<TextInputEditText[]> list){
+    public void readCards(ArrayList<MyDreamCard> list){
         for (int i = 0; i <list.size() ; i++) {
-            Log.d(TAG, "readCards: Title "+(i+1)+" "+list.get(i)[0].getText());
-            Log.d(TAG, "readCards: Content "+(i+1)+" "+ list.get(i)[1].getText());
+            Log.d(TAG, "readCards: Title "+(i+1)+" "+list.get(i).getEt_dreamTitle().getText());
+            Log.d(TAG, "readCards: Content "+(i+1)+" "+ list.get(i).getEt_dreamContent().getText());
 
         }
     }
