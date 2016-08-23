@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/date"
+            android:id="@+id/tv_date_newdream"
+            android:layout_marginTop="29dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:ems="10"
+            android:id="@+id/datePicker"
+            android:onClick="onDateChosen"
+            android:editable="false"
+            android:layout_alignBottom="@+id/tv_date_newdream"
+            android:layout_centerHorizontal="true" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_color_picker"
+            android:src="@drawable/ic_color_lens_black_40dp"
+            android:layout_alignTop="@+id/datePicker"
+            android:layout_alignParentEnd="true"
+            android:background="#00ffffff"
+            android:contentDescription="color_picker"
+            android:layout_alignBottom="@+id/datePicker"
+            android:layout_toEndOf="@+id/datePicker" />
+
+
+    <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_et_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:layout_below="@+id/tv_date_newdream"
+            android:layout_alignEnd="@+id/button">
+            <android.support.design.widget.TextInputEditText
+                android:hint="@string/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_dream_title"
+                android:layout_above="@+id/et_dreamcontent"
+                android:layout_alignParentStart="true" />
+        </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_dreamcontent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_layout_et_title"
+        android:layout_alignEnd="@+id/button"
+        android:layout_marginTop="41dp">
+        <android.support.design.widget.TextInputEditText
+            android:hint="@string/what_happened_in_my_dream"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_dreamcontent"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_next_dream"
+        android:id="@+id/button"
+        android:layout_marginTop="36dp"
+        android:layout_below="@+id/input_layout_dreamcontent"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

@@ -23,74 +23,23 @@
         android:layout_height="match_parent"
         android:id="@+id/scrollView"
         android:layout_below="@+id/my_toolbar"
-        android:background="#efebe9">
+        android:background="#efebe9"
+        android:padding="25dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="30dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/date"
-                android:id="@+id/tv_date_newdream"
-                android:layout_marginTop="29dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:ems="10"
-                android:id="@+id/datePicker"
-                android:onClick="onDateChosen"
-                android:editable="false"
-                android:layout_alignBottom="@+id/tv_date_newdream"
-                android:layout_centerHorizontal="true" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/bt_color_picker"
-                android:src="@drawable/ic_color_lens_black_40dp"
-                android:layout_alignTop="@+id/datePicker"
-                android:layout_alignParentEnd="true"
-                android:background="#00ffffff"
-                android:contentDescription="color_picker"
-                android:layout_alignBottom="@+id/datePicker"
-                android:layout_toEndOf="@+id/datePicker" />
+<include layout="@layout/content_new_dream"/>
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/dreams"
-                android:id="@+id/tv_dreams"
-                android:layout_below="@+id/datePicker"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="30dp" />
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/dream_cards"
-                android:layout_below="@+id/tv_dreams"
-                android:layout_alignParentStart="true"
-                android:dividerPadding="50dp"
-                android:animateLayoutChanges="true">
-            </LinearLayout>
-
-
-        </RelativeLayout>
 
     </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/relativeLayout">
+
+    </RelativeLayout>
 
 
 </RelativeLayout>
