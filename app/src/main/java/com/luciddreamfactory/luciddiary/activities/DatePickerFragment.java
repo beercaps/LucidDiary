@@ -2,7 +2,7 @@ package com.luciddreamfactory.luciddiary.activities;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.icu.util.Calendar;
+
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -10,14 +10,22 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.luciddreamfactory.luciddiary.R;
+import com.luciddreamfactory.luciddiary.interfaces.DatePickerCallBack;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
-    private static final String TAG = DatePickerFragment.class.getSimpleName();
 
+
+
+    private DatePickerCallBack callback = null;
+    private static final String TAG = DatePickerFragment.class.getSimpleName();
     private  int year;
     private  int month;
     private  int day;
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -31,19 +39,34 @@ public class DatePickerFragment extends DialogFragment
         return new DatePickerDialog(getActivity(), this, year, month, day);
     }
 
+
     public void onDateSet(DatePicker view, int year, int month, int day) {
         Log.d(TAG, "onDateSet: day "+ day);
         Log.d(TAG, "onDateSet: day "+ view.getDayOfMonth());
-        // Do something with the date chosen by the user
-        EditText et_datePicker= (EditText) getActivity().findViewById(R.id.datePicker);
-        if (view.getDayOfMonth() == this.day && view.getMonth()== this.month && view.getYear()==this.year){
-            et_datePicker.setText(R.string.last_night);
-
-        }else{
-            et_datePicker.setText(view.getDayOfMonth()+"."+view.getMonth()+"."+view.getYear());
-
-
+        // call callback Method
+        if (callback != null) {
+            callback.onDateChosen(getFormattedDate(view.getDayOfMonth(),view.getMonth(),view.getYear()));
+        } else {
+            Log.e(TAG, "onDateSet: DatePickerCallBack callback ist NULL!");
         }
+        }
+
+
+    public Calendar getFormattedDate(int day, int month, int year){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.YEAR, year);
+
+
+        return cal;
     }
 
+    public DatePickerCallBack getCallback() {
+        return callback;
+    }
+
+    public void setCallback(DatePickerCallBack callback) {
+        this.callback = callback;
+    }
 }

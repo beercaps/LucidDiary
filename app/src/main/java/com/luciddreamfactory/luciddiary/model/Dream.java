@@ -1,18 +1,21 @@
 package com.luciddreamfactory.luciddiary.model;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Created by kevinwetzel on 21.08.16.
  */
 public class Dream {
 
-    String title;
-    String content;
-    Date date;
-    ArrayList<Tag> tags;
-    ArrayList<Category> categories;
+    private String title;
+    private String content;
+    private Calendar date;
+    private Calendar time;
+    private ArrayList<Tag> tags;
+    private boolean wihtoutDate;
+    private boolean wihtoutTime;
+    private int color;
 
 
 
@@ -20,7 +23,7 @@ public class Dream {
 
     }
 
-    public Dream(String title, String content, Date date) {
+    public Dream(String title, String content, Calendar date) {
         this.title = title;
         this.content = content;
         this.date = date;
@@ -42,11 +45,11 @@ public class Dream {
         this.content = content;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Calendar date) {
         this.date = date;
     }
 
@@ -58,11 +61,39 @@ public class Dream {
        tags.add(tag);
     }
 
-    public ArrayList<Category> getCategories() {
-        return categories;
+    public Calendar getTime() {
+        return time;
     }
 
-    public void setCategory(Category category) {
-        categories.add(category);
+    public void setTime(Calendar time) {
+        this.time = time;
+    }
+
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags.addAll(tags);
+    }
+
+    public boolean isWihtoutDate() {
+        return wihtoutDate;
+    }
+
+    public void setWihtoutDate(boolean wihtoutDate) {
+        this.wihtoutDate = wihtoutDate;
+    }
+
+    public boolean isWihtoutTime() {
+        return wihtoutTime;
+    }
+
+    public void setWihtoutTime(boolean wihtoutTime) {
+        this.wihtoutTime = wihtoutTime;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }
