@@ -32,14 +32,14 @@
 
     </ScrollView>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/relativeLayout">
-
-    </RelativeLayout>
-
+        android:id="@+id/fab_record"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:rippleColor="@color/colorPrimaryDark"/>
 
 </RelativeLayout>

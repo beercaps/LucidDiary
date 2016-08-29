@@ -56,7 +56,9 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.action_menu_cancel:
-                Log.d(TAG, "onClick: cancel"); break;
+                Log.d(TAG, "onClick: cancel");
+                finish();
+                break;
             case R.id.action_menu_save:
                 Log.d(TAG, "onClick: save");  break;
         }

@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
             android:layout_below="@+id/tv_date_newdream"
-            android:layout_alignEnd="@+id/button">
+        android:layout_alignEnd="@+id/bt_color_picker">
             <android.support.design.widget.TextInputEditText
                 android:hint="@string/title"
                 android:layout_width="match_parent"
@@ -57,8 +57,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/input_layout_et_title"
-        android:layout_alignEnd="@+id/button"
-        android:layout_marginTop="41dp">
+        android:layout_marginTop="41dp"
+        android:layout_alignParentEnd="true">
         <android.support.design.widget.TextInputEditText
             android:hint="@string/what_happened_in_my_dream"
             android:layout_width="match_parent"
@@ -77,6 +77,6 @@
         android:id="@+id/button"
         android:layout_marginTop="36dp"
         android:layout_below="@+id/input_layout_dreamcontent"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
