@@ -22,6 +22,7 @@ import com.android.colorpicker.ColorPickerDialog;
 import com.android.colorpicker.ColorPickerSwatch;
 import com.android.ex.chips.BaseRecipientAdapter;
 import com.android.ex.chips.RecipientEditTextView;
+import com.android.ex.chips.RecipientEntry;
 import com.luciddreamfactory.luciddiary.R;
 import com.luciddreamfactory.luciddiary.interfaces.DatePickerCallBack;
 import com.luciddreamfactory.luciddiary.model.Dream;
@@ -32,7 +33,8 @@ import java.util.Calendar;
 
 public class NewDreamActivity extends AppCompatActivity implements View.OnClickListener,
                                                                    CompoundButton.OnCheckedChangeListener,
-                                                                   TimePickerDialog.OnTimeSetListener{
+                                                                   TimePickerDialog.OnTimeSetListener,
+        RecipientEditTextView.RecipientChipAddedListener{
     private static final String TAG = NewDreamActivity.class.getSimpleName();
 
     private ImageButton colorPicker;
@@ -93,7 +95,9 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         tokens = (RecipientEditTextView) findViewById(R.id.ret_tags);
 
         tokens.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-        tokens.setAdapter(new BaseRecipientAdapter(this));
+      //  tokens.setAdapter(baseadapter);
+        tokens.setRecipientChipAddedListener(this);
+
         //TODO chips zum laufen bringen
 
         dreamContent = (EditText) findViewById(R.id.et_dreamcontent);
@@ -101,7 +105,6 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
 
         //TODO FAB der sich ausklappt für FARBE, SPEECH und evtl nächster Traum erfassen
 
-        //TODO TOGGLEBUTTON für stunden
 
     }
 
@@ -166,6 +169,8 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
+
+
 
     //called when DatePicker button is clicked
     public void showDatePicker() {
@@ -281,6 +286,11 @@ private int[] createColorArray(){
         this.timePicker.setText(sb.toString());
 
         Log.d(TAG, "onTimeSet: "+cal.toString());
+    }
+
+    @Override
+    public void onRecipientChipAdded(RecipientEntry entry) {
+
     }
 }
 

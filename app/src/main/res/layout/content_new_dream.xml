@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_dream_root_relative_layout"
     android:paddingTop="10dp">
 
@@ -95,9 +97,9 @@
         android:layout_height="wrap_content"
         android:text="@string/add_next_dream"
         android:id="@+id/bt_next_dream"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/input_layout_tags"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="57dp" />
+        android:layout_marginTop="58dp" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_tags"
@@ -108,9 +110,11 @@
         android:layout_alignRight="@+id/toggle_without_time">
     <com.android.ex.chips.RecipientEditTextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/ret_tags"
-        android:hint="Enter Tags"/>
+        app:unselectedChipBackgroundColor="@color/colorAccent"
+        android:hint="Enter Tags"
+        />
     </android.support.design.widget.TextInputLayout>
 
     <ToggleButton
