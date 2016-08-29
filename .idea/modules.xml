@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/LucidDiary.iml" filepath="$PROJECT_DIR$/LucidDiary.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/chips/chips.iml" filepath="$PROJECT_DIR$/chips/chips.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chips/chips.iml" filepath="$PROJECT_DIR$/chips/chips.iml" />
+      <module fileurl="file://$PROJECT_DIR$/colorpicker/colorpicker.iml" filepath="$PROJECT_DIR$/colorpicker/colorpicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/colorpicker/colorpicker.iml" filepath="$PROJECT_DIR$/colorpicker/colorpicker.iml" />
     </modules>
   </component>
