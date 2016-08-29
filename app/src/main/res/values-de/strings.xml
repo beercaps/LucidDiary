@@ -9,4 +9,5 @@
     <string name="settings">Einstellungen</string>
     <string name="tools">Werkzeuge</string>
     <string name="statistics">Statistik</string>
+    <string name="color_title">Wähle eine Farbe</string>
 </resources>

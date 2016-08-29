@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/content_dream_root_relative_layout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -10,7 +11,8 @@
             android:id="@+id/tv_date_newdream"
             android:layout_marginTop="29dp"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:paddingLeft="25dp" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -42,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
             android:layout_below="@+id/tv_date_newdream"
-        android:layout_alignEnd="@+id/bt_color_picker">
+            android:layout_alignEnd="@+id/bt_color_picker">
             <android.support.design.widget.TextInputEditText
                 android:hint="@string/title"
                 android:layout_width="match_parent"
@@ -57,8 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/input_layout_et_title"
-        android:layout_marginTop="41dp"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentStart="true">
         <android.support.design.widget.TextInputEditText
             android:hint="@string/what_happened_in_my_dream"
             android:layout_width="match_parent"
@@ -74,9 +75,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_next_dream"
-        android:id="@+id/button"
-        android:layout_marginTop="36dp"
+        android:id="@+id/bt_next_dream"
+        android:layout_marginTop="49dp"
+        android:layout_below="@+id/input_layout_tags"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="25dp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="41dp"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/input_layout_dreamcontent"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true">
+    <com.android.ex.chips.RecipientEditTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ret_tags"
+        android:hint="Enter Tags"/>
+    </android.support.design.widget.TextInputLayout>
 
 </RelativeLayout>

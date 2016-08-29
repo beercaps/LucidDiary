@@ -21,10 +21,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView"
-        android:layout_below="@+id/my_toolbar"
-        android:background="#efebe9"
-        android:padding="25dp">
+        android:id="@+id/new_dream_scroll_view"
+        android:layout_below="@+id/my_toolbar">
 
 <include layout="@layout/content_new_dream"/>
 
@@ -40,6 +38,7 @@
         android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:rippleColor="@color/colorPrimaryDark"/>
+        app:rippleColor="@color/colorPrimaryDark"
+        android:src="@drawable/ic_keyboard_voice_black_24dp"/>
 
 </RelativeLayout>
