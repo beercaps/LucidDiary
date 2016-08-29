@@ -1,18 +1,21 @@
 package com.luciddreamfactory.luciddiary.activities;
 
 
+import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ScrollView;
+import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
 import com.android.colorpicker.ColorPickerDialog;
@@ -27,16 +30,21 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public class NewDreamActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
+public class NewDreamActivity extends AppCompatActivity implements View.OnClickListener,
+                                                                   CompoundButton.OnCheckedChangeListener,
+                                                                   TimePickerDialog.OnTimeSetListener{
     private static final String TAG = NewDreamActivity.class.getSimpleName();
 
     private ImageButton colorPicker;
-    private EditText datePicker;
     private RecipientEditTextView tokens;
     private ToggleButton withoutDate;
+    private ToggleButton withoutTime;
     private ScrollView newDreamScrollView;
+
+    private EditText datePicker;
     private EditText dreamTitle;
     private EditText dreamContent;
+    private EditText timePicker;
     private Dream dream;
 
 
@@ -46,6 +54,7 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        dream = new Dream();
 
         setContentView(R.layout.activity_new_dream);
         newDreamScrollView = (ScrollView) findViewById(R.id.new_dream_scroll_view);
@@ -66,14 +75,20 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         // Initialisierungen von Widgets
         datePicker = (EditText) findViewById(R.id.et_datePicker);
         datePicker.setText(getFormattedDate(getCalendarOfYesterday()));
-        dream.setDate(getCalendarOfYesterday());
         datePicker.setOnClickListener(this);
+        dream.setDate(getCalendarOfYesterday());
 
         colorPicker = (ImageButton) findViewById(R.id.bt_color_picker);
         colorPicker.setOnClickListener(this);
 
+        timePicker = (EditText) findViewById(R.id.et_time_picker);
+        timePicker.setOnClickListener(this);
+
         withoutDate = (ToggleButton) findViewById(R.id.toggle_without_Date);
         withoutDate.setOnCheckedChangeListener(this);
+
+        withoutTime = (ToggleButton) findViewById(R.id.toggle_without_time);
+        withoutTime.setOnCheckedChangeListener(this);
 
         tokens = (RecipientEditTextView) findViewById(R.id.ret_tags);
 
@@ -111,6 +126,11 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
                 Log.d(TAG, "onClick: datePicker");
                 showDatePicker();
                 break;
+
+            case R.id.et_time_picker:
+                Log.d(TAG, "onClick: timePicker");
+                showTimePicker();
+                break;
         }
     }
 
@@ -121,16 +141,28 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
                 Log.d(TAG, "onClick: toggleButton without Date");
 
                 if (isChecked) {
-                    Log.d(TAG, "onCheckedChanged: checked"); //on
+                    Log.d(TAG, "onCheckedChanged: Date checked"); //on
                     datePicker.setEnabled(true);
                     dream.setWihtoutDate(false);
 
                 } else {
-                    Log.d(TAG, "onCheckedChanged: is not checked"); //off
+                    Log.d(TAG, "onCheckedChanged: Date is not checked"); //off
                     datePicker.setEnabled(false);
                     dream.setWihtoutDate(true);
                 }
-
+                break;
+            /////////////////////
+            case R.id.toggle_without_time:
+                Log.d(TAG, "onCheckedChanged: without Time");
+                if (isChecked){
+                    Log.d(TAG, "onCheckedChanged: Time checked");
+                    timePicker.setEnabled(true);
+                    dream.setWihtoutTime(false);
+                }else{
+                    Log.d(TAG, "onCheckedChanged: Time not checked");
+                    timePicker.setEnabled(false);
+                    dream.setWihtoutTime(true);
+                }
                 break;
         }
     }
@@ -161,6 +193,13 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         colorPickerDialog.show(getFragmentManager(), "colorPicker");
+    }
+
+    private void showTimePicker(){
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                this, this, 0, 0, true);
+
+        timePickerDialog.show();
     }
 
 private int[] createColorArray(){
@@ -200,22 +239,48 @@ private int[] createColorArray(){
     private Calendar getCalendarOfYesterday(){
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -1);
-
+        Log.d(TAG, "getCalendarOfYesterday: "+ cal.toString());
         return cal;
     }
 
 
     private void saveDream() {
-        //has date ->delete former added Date
-        if (dream.isWihtoutDate() == false) {
-            dream.setDate(null);
-        }
+        //has date ->ignore former added Date if false
+        //has time ->ignore former added time if false
+
         dream.setTitle(dreamTitle.getText().toString().trim());
         dream.setContent(dreamContent.getText().toString().trim());
-
+      //  dream.setTime(timePicker.getText().);
         //TODO add tags
         //TODO add time
 
+    }
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
+        cal.set(Calendar.MINUTE, timePicker.getMinute());
+        dream.setTime(cal);
+
+        StringBuilder sb = new StringBuilder();
+
+        //add second 0 if hour or minute is 0 (0:0 -> 00:00)
+        if (timePicker.getHour()== 0){
+            sb.append("00");
+        }else{
+            sb.append(timePicker.getHour());
+        }
+        sb.append(":");
+        if (timePicker.getMinute() == 0){
+            sb.append("00");
+        }else{
+            sb.append(timePicker.getMinute());
+        }
+
+        this.timePicker.setText(sb.toString());
+
+        Log.d(TAG, "onTimeSet: "+cal.toString());
     }
 }
 
