@@ -13,6 +13,8 @@ public class Dream {
     private Calendar date;
     private Calendar time;
     private ArrayList<Tag> tags;
+    private ArrayList<Audio> audio;
+    private ArrayList<Drawing> drawings;
     private boolean wihtoutDate;
     private boolean wihtoutTime;
     private int color;
@@ -95,5 +97,21 @@ public class Dream {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public ArrayList<Audio> getAudio() {
+        return audio;
+    }
+
+    public void setAudio(ArrayList<Audio> audio) {
+        this.audio.addAll(audio);
+    }
+
+    public ArrayList<Drawing> getDrawings() {
+        return drawings;
+    }
+
+    public void setDrawings(ArrayList<Drawing> drawings) {
+        this.drawings.addAll(drawings);
     }
 }

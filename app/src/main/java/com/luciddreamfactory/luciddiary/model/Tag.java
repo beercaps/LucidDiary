@@ -5,20 +5,22 @@ package com.luciddreamfactory.luciddiary.model;
  */
 public class Tag {
 
-    String tag;
+   private  String tagName;
+   private long amountUsed;
 
-    public Tag() {
+    public String getTagName() {
+        return tagName;
     }
 
-    public Tag(String tag) {
-        this.tag = tag;
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
     }
 
-    public String getTag() {
-        return tag;
+    public long getAmountUsed() {
+        return amountUsed;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setAmountUsed(long amountUsed) {
+        this.amountUsed = amountUsed;
     }
 }

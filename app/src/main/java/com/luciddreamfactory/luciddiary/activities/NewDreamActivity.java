@@ -98,7 +98,7 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
       //  tokens.setAdapter(baseadapter);
         tokens.setRecipientChipAddedListener(this);
 
-        //TODO chips zum laufen bringen
+        //TODO chips layout ändern, sowie adapter erstellen
 
         dreamContent = (EditText) findViewById(R.id.et_dreamcontent);
         dreamTitle = (EditText) findViewById(R.id.et_dream_title);

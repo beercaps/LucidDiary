@@ -5,20 +5,12 @@ package com.luciddreamfactory.luciddiary.model;
  */
 public class Audio {
 
-    long length;
-    long size;
-    String audioTitle;
-    String path;
+    private long length;
+    private String audioTitle;
+    private String path;
+
 
     public Audio() {
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
     }
 
     public String getAudioTitle() {
@@ -44,4 +36,6 @@ public class Audio {
     public void setLength(long length) {
         this.length = length;
     }
+
+
 }
