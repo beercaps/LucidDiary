@@ -2,16 +2,17 @@ package com.luciddreamfactory.luciddiary.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by kevinwetzel on 21.08.16.
  */
 public class Dream {
 
+    private long dreamID;
     private String title;
     private String content;
-    private Calendar date;
-    private Calendar time;
+    private Date date;
     private ArrayList<Tag> tags;
     private ArrayList<Audio> audio;
     private ArrayList<Drawing> drawings;
@@ -25,7 +26,7 @@ public class Dream {
 
     }
 
-    public Dream(String title, String content, Calendar date) {
+    public Dream(String title, String content, Date date) {
         this.title = title;
         this.content = content;
         this.date = date;
@@ -47,11 +48,11 @@ public class Dream {
         this.content = content;
     }
 
-    public Calendar getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Calendar date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -63,13 +64,6 @@ public class Dream {
        tags.add(tag);
     }
 
-    public Calendar getTime() {
-        return time;
-    }
-
-    public void setTime(Calendar time) {
-        this.time = time;
-    }
 
     public void setTags(ArrayList<Tag> tags) {
         this.tags.addAll(tags);
@@ -113,5 +107,13 @@ public class Dream {
 
     public void setDrawings(ArrayList<Drawing> drawings) {
         this.drawings.addAll(drawings);
+    }
+
+    public long getDreamID() {
+        return dreamID;
+    }
+
+    public void setDreamID(long dreamID) {
+        this.dreamID = dreamID;
     }
 }

@@ -25,12 +25,9 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
     public static final String C_DREAM_TITLE = "c_title";
     public static final String C_DREAM_CONTENT = "c_content";
     public static final String C_DREAM_DATE = "c_date";
-    public static final String C_DREAM_TIME = "c_time";
     public static final String C_DREAM_WITHOUT_DATE = "c_without_date";
     public static final String C_DREAM_WITHOUT_TIME = "c_without_time";
     public static final String C_DREAM_COLOR = "c_color";
-    public static final String C_DREAM_AUDIO_ID = "c_audio_id";     //foreign key
-    public static final String C_DREAM_DRAWING_ID = "c_drawing_id"; //foreign key
 
     //----------------------------------------------------------------------------------------//
     //                                          Tag                                           //
@@ -45,6 +42,7 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
     //----------------------------------------------------------------------------------------//
     public static final String T_AUDIO = "t_audio";
     public static final String C_AUDIO_ID = "_id";
+    public static final String C_AUDIO_DREAM_ID = "dream_id";               //foreign key
     public static final String C_AUDIO_LENGTH = "c_length";
     public static final String C_AUDIO_TITLE = "c_audio_title";
     public static final String C_AUDIO_PATH = "c_audio_path";
@@ -54,6 +52,7 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
     //----------------------------------------------------------------------------------------//
     public static final String T_DRAWING = "t_drawing";
     public static final String C_DRAWING_ID = "_id";
+    public static final String C_DRAWING_DREAM_ID = "dream_id";
     //TODO implement rest
 
     //----------------------------------------------------------------------------------------//
@@ -70,12 +69,9 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
                     C_DREAM_TITLE + " TEXT, "+
                     C_DREAM_CONTENT+ " TEXT, "+
                     C_DREAM_DATE + " INTEGER, "+
-                    C_DREAM_TIME + " INTEGER, "+
                     C_DREAM_WITHOUT_DATE + " INTEGER, "+
                     C_DREAM_WITHOUT_TIME + " INTEGER, "+
                     C_DREAM_COLOR + " INTEGER, "+
-                    "FOREIGN KEY( "+C_DREAM_AUDIO_ID+" ) REFERENCES "+ T_AUDIO+" ( "+C_AUDIO_ID+" ),"+
-                    "FOREIGN KEY( "+C_DREAM_DRAWING_ID+" ) REFERENCES "+ T_DRAWING+" ( "+C_DRAWING_ID+" )"+
                     " );";
 
     public static final String SQL_CREATE_TAG =
@@ -93,6 +89,7 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
                     C_AUDIO_LENGTH + " INTEGER, "+
                     C_AUDIO_TITLE + " TEXT,"+
                     C_AUDIO_PATH + " TEXT"+
+                    "FOREIGN KEY( "+C_AUDIO_DREAM_ID+" ) REFERENCES "+ T_DREAM+" ( "+C_DREAM_ID+" ),"+
                     ");";
 
     //TODO implement rest
@@ -100,6 +97,7 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
             "CREATE TABLE "+ T_DRAWING+
                     "(" +
                     C_DRAWING_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT "+
+                    "FOREIGN KEY( "+C_DRAWING_ID+" ) REFERENCES "+ T_DREAM+" ( "+C_DREAM_ID+" ),"+
                     ");";
 
     public static final String SQL_CREATE_DREAM_TAG_ASSOCIATION =
