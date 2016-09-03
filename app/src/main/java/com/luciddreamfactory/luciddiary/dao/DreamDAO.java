@@ -31,7 +31,7 @@ public class DreamDAO {
     LucidDiaryDbHelper.C_DREAM_DATE,
     LucidDiaryDbHelper.C_DREAM_WITHOUT_DATE,
     LucidDiaryDbHelper.C_DREAM_WITHOUT_TIME,
-    LucidDiaryDbHelper.C_DREAM_COLOR,
+    LucidDiaryDbHelper.C_DREAM_COLOR
     };
 
 
@@ -49,7 +49,7 @@ public class DreamDAO {
         Log.d(TAG, "Datenbank mit Hilfe des BooxDbHelpers geschlossen.");
     }
 
-    public Dream createDream(String title, String content, Date date, boolean withoutDate, boolean withoutTime, long dreamDrawingID, int color) {
+    public Dream createDream(String title, String content, Date date, boolean withoutDate, boolean withoutTime, int color) {
         long insertId;
 
         ContentValues values = new ContentValues();
@@ -134,7 +134,9 @@ public class DreamDAO {
             cursor.moveToFirst();
             dream = cursorToDream(cursor);
             cursor.close();
-            Log.d(TAG, "searchDream ID: "+ dream.getDreamID()+ "Inhalt"+ dream.toString());
+            Log.d(TAG, "searchDream ID: " + dream.getDreamID() + "Inhalt" + dream.toString());
+        } else {
+            throw  new IllegalArgumentException("Invalid DREAM ID: " + dream);
         }
 
         return dream;

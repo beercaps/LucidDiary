@@ -5,8 +5,9 @@ package com.luciddreamfactory.luciddiary.model;
  */
 public class Tag {
 
+   private long tagID;
    private  String tagName;
-   private long amountUsed;
+
 
     public String getTagName() {
         return tagName;
@@ -16,11 +17,11 @@ public class Tag {
         this.tagName = tagName;
     }
 
-    public long getAmountUsed() {
-        return amountUsed;
+    public long getTagID() {
+        return tagID;
     }
 
-    public void setAmountUsed(long amountUsed) {
-        this.amountUsed = amountUsed;
+    public void setTagID(long tagID) {
+        this.tagID = tagID;
     }
 }

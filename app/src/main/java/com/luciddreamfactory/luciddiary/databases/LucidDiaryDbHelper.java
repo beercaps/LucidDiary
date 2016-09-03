@@ -35,7 +35,6 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
     public static final String T_TAG = "t_tag";
     public static final String C_TAG_ID = "_id";
     public static final String C_TAG_NAME = "t_tag_name";
-    public static final String C_TAG_AMOUNT_USED = "t_amount_used";
 
     //----------------------------------------------------------------------------------------//
     //                                          Audio                                         //
@@ -79,7 +78,6 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
                     "("+
                         C_TAG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
                         C_TAG_NAME + " TEXT, "+
-                        C_TAG_AMOUNT_USED +" INTEGER "+
                         " );";
 
     public static final String SQL_CREATE_AUDIO =
