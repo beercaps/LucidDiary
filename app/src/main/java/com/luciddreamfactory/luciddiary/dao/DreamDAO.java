@@ -41,8 +41,8 @@ public class DreamDAO {
     public DreamDAO(Context context) {
 
         this.lucidDiaryDbHelper = new LucidDiaryDbHelper(context);
-        this.tagDAO = new TagDAO(context);
-        this.dreamTagAssocDAO = new DreamTagAssocDAO(context);
+        this.tagDAO = new TagDAO(context, this.lucidDiaryDbHelper);
+        this.dreamTagAssocDAO = new DreamTagAssocDAO(context, this.lucidDiaryDbHelper, this.tagDAO, this);
     }
 
     public void open(){

@@ -27,8 +27,8 @@ public class TagDAO {
             LucidDiaryDbHelper.C_TAG_NAME
     };
 
-    public TagDAO(Context context) {
-        this.lucidDiaryDbHelper = new LucidDiaryDbHelper(context);
+    public TagDAO(Context context, LucidDiaryDbHelper lucidDiaryDbHelper) {
+        this.lucidDiaryDbHelper = lucidDiaryDbHelper;
     }
 
     public void open(){

@@ -30,10 +30,10 @@ public class DreamTagAssocDAO {
             LucidDiaryDbHelper.C_DREAM_TAG_ASSOC_TAG_ID
     };
 
-    public DreamTagAssocDAO(Context context) {
-        this.lucidDiaryDbHelper = new LucidDiaryDbHelper(context);
-        this.tagDAO = new TagDAO(context);
-        this.dreamDAO = new DreamDAO(context);
+    public DreamTagAssocDAO(Context context, LucidDiaryDbHelper lucidDiaryDbHelper, TagDAO tagDAO, DreamDAO dreamDAO) {
+        this.lucidDiaryDbHelper = lucidDiaryDbHelper;
+        this.tagDAO = tagDAO;
+        this.dreamDAO = dreamDAO;
     }
 
     public void open(){

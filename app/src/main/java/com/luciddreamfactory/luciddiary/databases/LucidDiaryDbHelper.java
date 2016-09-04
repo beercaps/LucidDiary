@@ -14,7 +14,7 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
     private static final String TAG = "LucidDiaryDbHelper";
 
     public static String DB_NAME = "myDiary";
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 6;
 
 
     //----------------------------------------------------------------------------------------//
@@ -70,24 +70,24 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
                     C_DREAM_DATE + " INTEGER, "+
                     C_DREAM_WITHOUT_DATE + " INTEGER, "+
                     C_DREAM_WITHOUT_TIME + " INTEGER, "+
-                    C_DREAM_COLOR + " INTEGER, "+
+                    C_DREAM_COLOR + " INTEGER "+
                     " );";
 
     public static final String SQL_CREATE_TAG =
             "CREATE TABLE "+ T_TAG+
                     "("+
                         C_TAG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                        C_TAG_NAME + " TEXT, "+
+                        C_TAG_NAME + " TEXT "+
                         " );";
 
     public static final String SQL_CREATE_AUDIO =
             "CREATE TABLE "+ T_AUDIO+
                     "(" +
-                    C_AUDIO_ID + " INTEGER PRIMARY KEY AUTOINREMENT, "+
+                    C_AUDIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
                     C_AUDIO_LENGTH + " INTEGER, "+
                     C_AUDIO_TITLE + " TEXT,"+
-                    C_AUDIO_PATH + " TEXT"+
-                    "FOREIGN KEY( "+C_AUDIO_DREAM_ID+" ) REFERENCES "+ T_DREAM+" ( "+C_DREAM_ID+" ),"+
+                    C_AUDIO_PATH + " TEXT "+
+                    "FOREIGN KEY( "+C_AUDIO_DREAM_ID+" ) REFERENCES "+ T_DREAM+" ( "+C_DREAM_ID+" )"+
                     ");";
 
     //TODO implement rest
@@ -95,12 +95,15 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
             "CREATE TABLE "+ T_DRAWING+
                     "(" +
                     C_DRAWING_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT "+
-                    "FOREIGN KEY( "+C_DRAWING_ID+" ) REFERENCES "+ T_DREAM+" ( "+C_DREAM_ID+" ),"+
+                    "FOREIGN KEY( "+C_DRAWING_ID+" ) REFERENCES "+ T_DREAM+" ( "+C_DREAM_ID+" )"+
                     ");";
 
     public static final String SQL_CREATE_DREAM_TAG_ASSOCIATION =
-            "CREATE TABLE "+ T_DRAWING+
+            "CREATE TABLE "+ T_DREAM_TAG_ASSOC+
                     "( " +
+                    C_DREAM_TAG_ASSOC_DREAM_ID +" INTEGER, "+
+                    C_DREAM_TAG_ASSOC_TAG_ID+ "INTEGER, "+
+
                     "PRIMARY KEY( "+ C_DREAM_TAG_ASSOC_DREAM_ID+", "+
                                      C_DREAM_TAG_ASSOC_TAG_ID + "), "+
                     "FOREIGN KEY( "+ C_DREAM_TAG_ASSOC_DREAM_ID + " ) REFERENCES "+ T_DREAM + "("+C_DREAM_ID+"),"+
@@ -120,10 +123,10 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
         try{
             sqLiteDatabase.execSQL(SQL_CREATE_TAG);
             Log.d(TAG, "Die Datenbanktabellen werden mit SQL-Befehl: "+ SQL_CREATE_TAG + "angelegt");
-            sqLiteDatabase.execSQL(SQL_CREATE_AUDIO);
-            Log.d(TAG, "Die Datenbanktabellen werden mit SQL-Befehl: "+ SQL_CREATE_AUDIO + "angelegt");
-            sqLiteDatabase.execSQL(SQL_CREATE_DRAWING);
-            Log.d(TAG, "Die Datenbanktabellen werden mit SQL-Befehl: "+ SQL_CREATE_DRAWING + "angelegt");
+          //  sqLiteDatabase.execSQL(SQL_CREATE_AUDIO);
+          //  Log.d(TAG, "Die Datenbanktabellen werden mit SQL-Befehl: "+ SQL_CREATE_AUDIO + "angelegt");
+          //  sqLiteDatabase.execSQL(SQL_CREATE_DRAWING);
+          //  Log.d(TAG, "Die Datenbanktabellen werden mit SQL-Befehl: "+ SQL_CREATE_DRAWING + "angelegt");
             sqLiteDatabase.execSQL(SQL_CREATE_DREAM);
             Log.d(TAG, "Die Datenbanktabellen werden mit SQL-Befehl: "+ SQL_CREATE_DREAM + "angelegt");
             sqLiteDatabase.execSQL(SQL_CREATE_DREAM_TAG_ASSOCIATION);
@@ -141,10 +144,11 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
 
         try {
+            Log.d(TAG, "onUpgrade: DROP TABLES");
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + T_DREAM_TAG_ASSOC);
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + T_DREAM);
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + T_DRAWING);
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + T_AUDIO);
+          //  sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + T_DRAWING);
+          //  sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + T_AUDIO);
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + T_TAG);
             onCreate(sqLiteDatabase);
         }catch (SQLException e){

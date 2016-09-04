@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -24,11 +25,13 @@ import com.android.ex.chips.BaseRecipientAdapter;
 import com.android.ex.chips.RecipientEditTextView;
 import com.android.ex.chips.RecipientEntry;
 import com.luciddreamfactory.luciddiary.R;
+import com.luciddreamfactory.luciddiary.dao.DreamDAO;
 import com.luciddreamfactory.luciddiary.interfaces.DatePickerCallBack;
 import com.luciddreamfactory.luciddiary.model.Dream;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class NewDreamActivity extends AppCompatActivity implements View.OnClickListener,
@@ -41,6 +44,7 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     private RecipientEditTextView tokens;
     private ToggleButton withoutDate;
     private ToggleButton withoutTime;
+    private Button nextDream;
     private ScrollView newDreamScrollView;
 
     private EditText datePicker;
@@ -49,13 +53,14 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     private EditText timePicker;
     private Dream dream;
 
+    private DreamDAO dreamDAO;
+
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         dream = new Dream();
 
         setContentView(R.layout.activity_new_dream);
@@ -73,6 +78,9 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         doneActionView.setOnClickListener(this);
         myToolbar.addView(actionBarButtons);
         setSupportActionBar(myToolbar);
+
+        //initialisirung DAO
+        dreamDAO = new DreamDAO(this);
 
         // Initialisierungen von Widgets
         datePicker = (EditText) findViewById(R.id.et_datePicker);
@@ -93,10 +101,12 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         withoutTime.setOnCheckedChangeListener(this);
 
         tokens = (RecipientEditTextView) findViewById(R.id.ret_tags);
-
         tokens.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
       //  tokens.setAdapter(baseadapter);
         tokens.setRecipientChipAddedListener(this);
+
+        nextDream = (Button) findViewById(R.id.bt_next_dream);
+        nextDream.setOnClickListener(this);
 
         //TODO chips layout ändern, sowie adapter erstellen
 
@@ -133,6 +143,11 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
             case R.id.et_time_picker:
                 Log.d(TAG, "onClick: timePicker");
                 showTimePicker();
+                break;
+
+            case R.id.bt_next_dream:
+                Log.d(TAG, "onClick: nextDream");
+                createTestDream(dream);
                 break;
         }
     }
@@ -178,8 +193,8 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         newFragment.setCallback(new DatePickerCallBack() {
             @Override
             public void onDateChosen(Calendar calendar) {
-                datePicker.setText(getFormattedDate(calendar));
-                dream.setDate(calendar);
+                datePicker.setText(getFormattedDate(calendar.getTime()));
+                dream.setDate(calendar.getTime());
             }
         });
         newFragment.show(getSupportFragmentManager(), "datePicker");
@@ -235,17 +250,17 @@ private int[] createColorArray(){
 
 }
 
-    private String getFormattedDate(Calendar calendar){
+    private String getFormattedDate(Date date){
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, yyyy");
-        Log.d(TAG, "getFormattedDate: "+ sdf.format(calendar.getTime()));
-        return sdf.format(calendar.getTime());
+        Log.d(TAG, "getFormattedDate: "+ sdf.format(date));
+        return sdf.format(date);
     }
 
-    private Calendar getCalendarOfYesterday(){
+    private Date getCalendarOfYesterday(){
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -1);
         Log.d(TAG, "getCalendarOfYesterday: "+ cal.toString());
-        return cal;
+        return cal.getTime();
     }
 
 
@@ -263,10 +278,12 @@ private int[] createColorArray(){
 
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
+
+        Date date = new Date();
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
         cal.set(Calendar.MINUTE, timePicker.getMinute());
-        dream.setTime(cal);
+        dream.setDate(cal.getTime());
 
         StringBuilder sb = new StringBuilder();
 
@@ -291,6 +308,14 @@ private int[] createColorArray(){
     @Override
     public void onRecipientChipAdded(RecipientEntry entry) {
 
+    }
+
+    private void  createTestDream(Dream dream) {
+        Dream insertedDream;
+        dreamDAO.open();
+        insertedDream = dreamDAO.createDream(dream);
+        dreamDAO.close();
+        Log.d(TAG, "createTestDream: inserted Dream "+insertedDream.toString());
     }
 }
 
