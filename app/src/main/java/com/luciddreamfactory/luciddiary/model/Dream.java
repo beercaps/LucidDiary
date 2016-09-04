@@ -3,6 +3,7 @@ package com.luciddreamfactory.luciddiary.model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by kevinwetzel on 21.08.16.
@@ -13,9 +14,9 @@ public class Dream {
     private String title;
     private String content;
     private Date date;
-    private ArrayList<Tag> tags;
-    private ArrayList<Audio> audio;
-    private ArrayList<Drawing> drawings;
+    private List<Tag> tags;
+    private List<Audio> audio;
+    private List<Drawing> drawings;
     private boolean wihtoutDate;
     private boolean wihtoutTime;
     private int color;
@@ -56,7 +57,7 @@ public class Dream {
         this.date = date;
     }
 
-    public ArrayList<Tag> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
@@ -65,7 +66,7 @@ public class Dream {
     }
 
 
-    public void setTags(ArrayList<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags.addAll(tags);
     }
 
@@ -93,7 +94,7 @@ public class Dream {
         this.color = color;
     }
 
-    public ArrayList<Audio> getAudio() {
+    public List<Audio> getAudio() {
         return audio;
     }
 
@@ -101,7 +102,7 @@ public class Dream {
         this.audio.addAll(audio);
     }
 
-    public ArrayList<Drawing> getDrawings() {
+    public List<Drawing> getDrawings() {
         return drawings;
     }
 

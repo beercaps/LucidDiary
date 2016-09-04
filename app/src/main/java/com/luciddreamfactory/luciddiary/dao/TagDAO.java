@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by kevinwetzel on 03.09.16.
  */
-public class TagsDAO {
+public class TagDAO {
 
     private static final String TAG = "TagsDAO";
 
@@ -27,7 +27,7 @@ public class TagsDAO {
             LucidDiaryDbHelper.C_TAG_NAME
     };
 
-    public TagsDAO(Context context) {
+    public TagDAO(Context context) {
         this.lucidDiaryDbHelper = new LucidDiaryDbHelper(context);
     }
 
@@ -89,7 +89,7 @@ public class TagsDAO {
             values.clear();
         }
 
-            inOperator = getINparameterString(insertedTagList);
+            inOperator = getINparameterStringT(insertedTagList);
 
             Cursor cursor = database.query(LucidDiaryDbHelper.T_TAG, columns, LucidDiaryDbHelper.C_TAG_ID+" IN ("+ inOperator+")", null, null, null, null);
             cursor.moveToFirst();
@@ -129,7 +129,7 @@ public class TagsDAO {
 
     public List<Tag> searchTag(List<Long> tagIDList) {
         List<Tag> queryTagList = new ArrayList<>();
-        String inOperator = getINparameterString(tagIDList);
+        String inOperator = getINparameterStringL(tagIDList);
         Cursor cursor = database.query(LucidDiaryDbHelper.T_TAG, columns, LucidDiaryDbHelper.C_TAG_ID+"IN("+inOperator+")", null, null, null, LucidDiaryDbHelper.C_TAG_NAME);
 
         cursor.moveToFirst();
@@ -158,7 +158,22 @@ public class TagsDAO {
         return tagList;
     }
 
-    private String getINparameterString(List<?> idList) {
+    private String getINparameterStringT(List<Tag> idList) {
+        //prepare String for IN Parameter
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i <idList.size() ; i++) {
+            sb.append("'");
+            sb.append(idList.get(i).getTagID());
+            sb.append("'");
+            //beim letzten durchlauf darf kein komma mehr angehängt werden
+            if (i < idList.size() - 1) {
+                sb.append(",");
+            }
+        }
+        return sb.toString();
+    }
+
+    private String getINparameterStringL(List<Long> idList) {
         //prepare String for IN Parameter
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i <idList.size() ; i++) {
@@ -172,5 +187,7 @@ public class TagsDAO {
         }
         return sb.toString();
     }
+
+
 
 }

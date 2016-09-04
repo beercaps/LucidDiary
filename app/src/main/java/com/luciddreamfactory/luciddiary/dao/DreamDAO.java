@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.luciddreamfactory.luciddiary.databases.LucidDiaryDbHelper;
 import com.luciddreamfactory.luciddiary.model.Dream;
+import com.luciddreamfactory.luciddiary.model.Tag;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,6 +24,8 @@ public class DreamDAO {
 
     private SQLiteDatabase database;
     private LucidDiaryDbHelper lucidDiaryDbHelper;
+    private TagDAO tagDAO;
+    private DreamTagAssocDAO dreamTagAssocDAO;
 
     private String[] columns = {
     LucidDiaryDbHelper.C_DREAM_ID,
@@ -36,7 +39,10 @@ public class DreamDAO {
 
 
     public DreamDAO(Context context) {
+
         this.lucidDiaryDbHelper = new LucidDiaryDbHelper(context);
+        this.tagDAO = new TagDAO(context);
+        this.dreamTagAssocDAO = new DreamTagAssocDAO(context);
     }
 
     public void open(){
@@ -49,8 +55,10 @@ public class DreamDAO {
         Log.d(TAG, "Datenbank mit Hilfe des BooxDbHelpers geschlossen.");
     }
 
-    public Dream createDream(String title, String content, Date date, boolean withoutDate, boolean withoutTime, int color) {
-        long insertId;
+    public Dream createDream(String title, String content, Date date, boolean withoutDate, boolean withoutTime, int color, List<Tag> tagList) {
+        long insertDreamId;
+        ArrayList<Long> insertTagsIDList = new ArrayList<>();
+        ArrayList<Tag> insertedTagList = new ArrayList<>();
 
         ContentValues values = new ContentValues();
                 values.put(LucidDiaryDbHelper.C_DREAM_TITLE,title);
@@ -63,10 +71,26 @@ public class DreamDAO {
                 //values.put(LucidDiaryDbHelper.C_DREAM_AUDIO_ID,audioID);
                 //values.put(LucidDiaryDbHelper.C_DREAM_DRAWING_ID,dreamDrawingID);
 
-                insertId = database.insert(LucidDiaryDbHelper.T_DREAM, null, values);
+                insertDreamId = database.insert(LucidDiaryDbHelper.T_DREAM, null, values);
                 Log.d(TAG, "createDream: dream created");
 
-        Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM, columns, LucidDiaryDbHelper.C_DREAM_ID +"="+insertId, null, null, null, null);
+        tagDAO.open();
+        //insert Tags into TAG DB and save insert IDs into List -->next step add into DreamTagAssoc Table
+        insertedTagList.addAll(tagDAO.createTag(tagList));
+        tagDAO.close();
+        for (Tag tag : insertedTagList) {
+            insertTagsIDList.add(tag.getTagID());
+        }
+
+        dreamTagAssocDAO.open();
+        for (int i = 0; i < insertTagsIDList.size() ; i++) {
+            // add dream id and all the Tag IDs to Assoc Table
+        dreamTagAssocDAO.createDreamTagAssoc(insertDreamId,insertTagsIDList.get(i));
+        }
+        dreamTagAssocDAO.close();
+
+
+        Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM, columns, LucidDiaryDbHelper.C_DREAM_ID +"="+insertDreamId, null, null, null, null);
         cursor.moveToFirst();
         Dream dream = cursorToDream(cursor);
         cursor.close();
@@ -74,7 +98,32 @@ public class DreamDAO {
         Log.d(TAG, "createDream: "+dream.toString());
 
         return dream;
+    }
 
+    public Dream createDream(Dream dream) {
+        ContentValues values = new ContentValues();
+        long insertIDDream;
+        long insertIDTag;
+
+        values.put(LucidDiaryDbHelper.C_DREAM_TITLE,dream.getTitle());
+        values.put(LucidDiaryDbHelper.C_DREAM_CONTENT,dream.getContent());
+        values.put(LucidDiaryDbHelper.C_DREAM_DATE,dream.getDate().getTime());
+        values.put(LucidDiaryDbHelper.C_DREAM_WITHOUT_DATE, (dream.isWihtoutDate()) ? 1 : 0);  //convert true/false to 1/0
+        values.put(LucidDiaryDbHelper.C_DREAM_WITHOUT_TIME, (dream.isWihtoutTime()) ? 1 : 0);  //convert true/false to 1/0
+        values.put(LucidDiaryDbHelper.C_DREAM_COLOR, dream.getColor());
+
+        //TODO insert into AUdio/Drawing Table
+        // values.put(LucidDiaryDbHelper.C_DREAM_AUDIO_ID,);
+        // values.put(LucidDiaryDbHelper.C_DREAM_DRAWING_ID,);
+
+        insertIDDream =  database.insert(LucidDiaryDbHelper.T_DREAM, null, values);
+
+        Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM, columns, LucidDiaryDbHelper.C_DREAM_ID + "="+ insertIDDream, null, null, null, null);
+        cursor.moveToFirst();
+        Dream insertedDream = cursorToDream(cursor);
+        cursor.close();
+        Log.d(TAG, "createDream: "+ dream.toString());
+        return  insertedDream;
     }
 
     private Dream cursorToDream(Cursor cursor) {
@@ -86,6 +135,8 @@ public class DreamDAO {
         int columnIndexWithoutDate = cursor.getColumnIndex(LucidDiaryDbHelper.C_DREAM_WITHOUT_DATE);
         int columnIndexWithoutTime = cursor.getColumnIndex(LucidDiaryDbHelper.C_DREAM_WITHOUT_TIME);
         int columnIndexColor = cursor.getColumnIndex(LucidDiaryDbHelper.C_DREAM_COLOR);
+
+
 
         Dream dream = new Dream();
         dream.setDreamID(columnIndexID);
@@ -99,35 +150,15 @@ public class DreamDAO {
         //dream.setAudio();  //TODO arraylist audio
         //dream.setDrawings(); //TODO arraylist drawing
 
+        //get Tags for the dream
+        dream.setTags(dreamTagAssocDAO.searchTagTag(dream.getDreamID()));
+
         return dream;
     }
 
-    public Dream createDream(Dream dream) {
-        ContentValues values = new ContentValues();
-        long insertID;
 
-        values.put(LucidDiaryDbHelper.C_DREAM_TITLE,dream.getTitle());
-        values.put(LucidDiaryDbHelper.C_DREAM_CONTENT,dream.getContent());
-        values.put(LucidDiaryDbHelper.C_DREAM_DATE,dream.getDate().getTime());
-        values.put(LucidDiaryDbHelper.C_DREAM_WITHOUT_DATE, (dream.isWihtoutDate()) ? 1 : 0);  //convert true/false to 1/0
-        values.put(LucidDiaryDbHelper.C_DREAM_WITHOUT_TIME, (dream.isWihtoutTime()) ? 1 : 0);  //convert true/false to 1/0
-        values.put(LucidDiaryDbHelper.C_DREAM_COLOR, dream.getColor());
 
-        //TODO insert into AUdio/Drawing Table
-       // values.put(LucidDiaryDbHelper.C_DREAM_AUDIO_ID,);
-       // values.put(LucidDiaryDbHelper.C_DREAM_DRAWING_ID,);
-
-       insertID =  database.insert(LucidDiaryDbHelper.T_DREAM, null, values);
-
-        Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM, columns, LucidDiaryDbHelper.C_DREAM_ID + "="+ insertID, null, null, null, null);
-        cursor.moveToFirst();
-        Dream insertedDream = cursorToDream(cursor);
-        cursor.close();
-        Log.d(TAG, "createDream: "+ dream.toString());
-        return  insertedDream;
-    }
-
-    public Dream searchDream(int dreamID) {
+    public Dream searchDream(long dreamID) {
         Dream dream = null;
         Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM, columns, LucidDiaryDbHelper.C_DREAM_ID + "=" +dreamID, null, null, null, null);
         if (cursor.moveToFirst()) {
@@ -140,6 +171,24 @@ public class DreamDAO {
         }
 
         return dream;
+    }
+
+    public List<Dream> searchDreams(List<Long> dreamIDList) {
+        List<Dream> dreamList = new ArrayList<>();
+        String inParameter = getINparameterString(dreamIDList);
+
+        Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM, columns, LucidDiaryDbHelper.C_DREAM_ID+"IN("+inParameter+")", null, null, null , LucidDiaryDbHelper.C_DREAM_DATE);
+        cursor.moveToFirst();
+        Dream dream;
+
+        while (!cursor.isAfterLast()) {
+            dream = cursorToDream(cursor);
+            dreamList.add(dream);
+            Log.d(TAG, "getAllDreams ID: "+ dream.getDreamID() + " Inhalt "+ dream.toString());
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return dreamList;
     }
 
     public List<Dream> getAllDreams() {
@@ -156,5 +205,20 @@ public class DreamDAO {
         }
         cursor.close();
         return dreamList;
+    }
+
+    private String getINparameterString(List<Long> idList) {
+        //prepare String for IN Parameter
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i <idList.size() ; i++) {
+            sb.append("'");
+            sb.append(idList.get(i));
+            sb.append("'");
+            //beim letzten durchlauf darf kein komma mehr angehängt werden
+            if (i < idList.size() - 1) {
+                sb.append(",");
+            }
+        }
+        return sb.toString();
     }
 }
