@@ -78,27 +78,32 @@ public class TagDAO {
     }
 
     public List<Tag> createTag(List<Tag> tagList) {
+
+
         ArrayList<Long> insertIDList = new ArrayList<>();
         ContentValues values = new ContentValues();
         ArrayList<Tag> insertedTagList = new ArrayList<>();
         String inOperator;
 
-        for (Tag tag: tagList) {
-            values.put(LucidDiaryDbHelper.C_TAG_NAME,tag.getTagName());
-            insertIDList.add(database.insert(LucidDiaryDbHelper.T_TAG, null, values));
-            values.clear();
-        }
+        if (tagList.size() > 0) {
+            for (Tag tag : tagList) {
+                values.put(LucidDiaryDbHelper.C_TAG_NAME, tag.getTagName());
+                insertIDList.add(database.insert(LucidDiaryDbHelper.T_TAG, null, values));
+                values.clear();
+            }
 
-            inOperator = getINparameterStringT(insertedTagList);
+            inOperator = getINparameterStringL(insertIDList);
 
-            Cursor cursor = database.query(LucidDiaryDbHelper.T_TAG, columns, LucidDiaryDbHelper.C_TAG_ID+" IN ("+ inOperator+")", null, null, null, null);
+            Cursor cursor = database.query(LucidDiaryDbHelper.T_TAG, columns, LucidDiaryDbHelper.C_TAG_ID + " IN (" + inOperator + ")", null, null, null, null);
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-            insertedTagList.add(cursorToTag(cursor));
+                insertedTagList.add(cursorToTag(cursor));
                 cursor.moveToNext();
             }
-        cursor.close();
-
+            cursor.close();
+        } else {
+            Log.d(TAG, "createTag: taglist is EMPTY!");
+        } 
         return insertedTagList;
     }
 
@@ -130,7 +135,7 @@ public class TagDAO {
     public List<Tag> searchTag(List<Long> tagIDList) {
         List<Tag> queryTagList = new ArrayList<>();
         String inOperator = getINparameterStringL(tagIDList);
-        Cursor cursor = database.query(LucidDiaryDbHelper.T_TAG, columns, LucidDiaryDbHelper.C_TAG_ID+"IN("+inOperator+")", null, null, null, LucidDiaryDbHelper.C_TAG_NAME);
+        Cursor cursor = database.query(LucidDiaryDbHelper.T_TAG, columns, LucidDiaryDbHelper.C_TAG_ID+" IN("+inOperator+")", null, null, null, LucidDiaryDbHelper.C_TAG_NAME);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

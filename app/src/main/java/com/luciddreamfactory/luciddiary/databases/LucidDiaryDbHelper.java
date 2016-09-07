@@ -14,7 +14,7 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
     private static final String TAG = "LucidDiaryDbHelper";
 
     public static String DB_NAME = "myDiary";
-    public static final int DB_VERSION = 6;
+    public static final int DB_VERSION = 8;
 
 
     //----------------------------------------------------------------------------------------//
@@ -102,7 +102,7 @@ public class LucidDiaryDbHelper extends SQLiteOpenHelper{
             "CREATE TABLE "+ T_DREAM_TAG_ASSOC+
                     "( " +
                     C_DREAM_TAG_ASSOC_DREAM_ID +" INTEGER, "+
-                    C_DREAM_TAG_ASSOC_TAG_ID+ "INTEGER, "+
+                    C_DREAM_TAG_ASSOC_TAG_ID+ " INTEGER, "+
 
                     "PRIMARY KEY( "+ C_DREAM_TAG_ASSOC_DREAM_ID+", "+
                                      C_DREAM_TAG_ASSOC_TAG_ID + "), "+

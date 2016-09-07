@@ -1,7 +1,6 @@
 package com.luciddreamfactory.luciddiary.model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -14,10 +13,10 @@ public class Dream {
     private String title;
     private String content;
     private Date date;
-    private List<Tag> tags;
-    private List<Audio> audio;
-    private List<Drawing> drawings;
-    private boolean wihtoutDate;
+    private List<Tag> tags = new ArrayList<>();
+    private List<Audio> audio = new ArrayList<>();
+    private List<Drawing> drawings = new ArrayList<>();
+    private boolean withoutDate;
     private boolean wihtoutTime;
     private int color;
 
@@ -70,19 +69,19 @@ public class Dream {
         this.tags.addAll(tags);
     }
 
-    public boolean isWihtoutDate() {
-        return wihtoutDate;
+    public boolean isWithoutDate() {
+        return withoutDate;
     }
 
-    public void setWihtoutDate(boolean wihtoutDate) {
-        this.wihtoutDate = wihtoutDate;
+    public void setWithoutDate(boolean withoutDate) {
+        this.withoutDate = withoutDate;
     }
 
-    public boolean isWihtoutTime() {
+    public boolean isWithoutTime() {
         return wihtoutTime;
     }
 
-    public void setWihtoutTime(boolean wihtoutTime) {
+    public void setWithoutTime(boolean wihtoutTime) {
         this.wihtoutTime = wihtoutTime;
     }
 
@@ -116,5 +115,28 @@ public class Dream {
 
     public void setDreamID(long dreamID) {
         this.dreamID = dreamID;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(", ID: ");
+        sb.append(this.getDreamID());
+        sb.append(", Title: ");
+        sb.append(this.getTitle());
+        sb.append(", Content: ");
+        sb.append(this.getContent());
+        sb.append(", Tags:");
+        sb.append(this.getTags().toString());
+        sb.append(", Date: ");
+        sb.append(this.getDate().toString());
+        sb.append(" Without date: ");
+        sb.append(this.isWithoutDate());
+        sb.append(", Without time: ");
+        sb.append(this.isWithoutTime());
+        sb.append(", Color: ");
+        sb.append(this.getColor());
+
+        return sb.toString();
     }
 }

@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -21,15 +20,16 @@ import android.widget.ToggleButton;
 
 import com.android.colorpicker.ColorPickerDialog;
 import com.android.colorpicker.ColorPickerSwatch;
-import com.android.ex.chips.BaseRecipientAdapter;
 import com.android.ex.chips.RecipientEditTextView;
 import com.android.ex.chips.RecipientEntry;
 import com.luciddreamfactory.luciddiary.R;
 import com.luciddreamfactory.luciddiary.dao.DreamDAO;
 import com.luciddreamfactory.luciddiary.interfaces.DatePickerCallBack;
 import com.luciddreamfactory.luciddiary.model.Dream;
+import com.luciddreamfactory.luciddiary.model.Tag;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -37,7 +37,8 @@ import java.util.Date;
 public class NewDreamActivity extends AppCompatActivity implements View.OnClickListener,
                                                                    CompoundButton.OnCheckedChangeListener,
                                                                    TimePickerDialog.OnTimeSetListener,
-        RecipientEditTextView.RecipientChipAddedListener{
+                                                                    RecipientEditTextView.RecipientChipAddedListener,
+                                                                    RecipientEditTextView.RecipientChipDeletedListener{
     private static final String TAG = NewDreamActivity.class.getSimpleName();
 
     private ImageButton colorPicker;
@@ -54,6 +55,7 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     private Dream dream;
 
     private DreamDAO dreamDAO;
+    private ArrayList<String> chipsList;
 
 
 
@@ -62,6 +64,7 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dream = new Dream();
+        chipsList = new ArrayList<>();
 
         setContentView(R.layout.activity_new_dream);
         newDreamScrollView = (ScrollView) findViewById(R.id.new_dream_scroll_view);
@@ -161,12 +164,12 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
                 if (isChecked) {
                     Log.d(TAG, "onCheckedChanged: Date checked"); //on
                     datePicker.setEnabled(true);
-                    dream.setWihtoutDate(false);
+                    dream.setWithoutDate(false);
 
                 } else {
                     Log.d(TAG, "onCheckedChanged: Date is not checked"); //off
                     datePicker.setEnabled(false);
-                    dream.setWihtoutDate(true);
+                    dream.setWithoutDate(true);
                 }
                 break;
             /////////////////////
@@ -175,11 +178,11 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
                 if (isChecked){
                     Log.d(TAG, "onCheckedChanged: Time checked");
                     timePicker.setEnabled(true);
-                    dream.setWihtoutTime(false);
+                    dream.setWithoutTime(false);
                 }else{
                     Log.d(TAG, "onCheckedChanged: Time not checked");
                     timePicker.setEnabled(false);
-                    dream.setWihtoutTime(true);
+                    dream.setWithoutTime(true);
                 }
                 break;
         }
@@ -310,8 +313,29 @@ private int[] createColorArray(){
 
     }
 
+
+    @Override
+    public void onRecipientChipDeleted(RecipientEntry entry) {
+
+    }
+
+
     private void  createTestDream(Dream dream) {
+        ArrayList<RecipientEntry> reList = new ArrayList<>();
         Dream insertedDream;
+        dream.setTitle(dreamTitle.getText().toString().trim());
+        dream.setContent(dreamContent.getText().toString().trim());
+        reList.addAll(tokens.getAllRecipients());
+
+        //add all tags from recipientEditTextView to dream
+        for (RecipientEntry entry: reList) {
+            Log.d(TAG, "createTestDream: relist123 "+entry.getDisplayName());
+            dream.setTag(new Tag(entry.getDisplayName().trim()));
+            Log.d(TAG, "createTestDream: tag added");
+            //dream.setTag(new Tag(entry.getDisplayName()));
+        }
+            Log.d(TAG, "createTestDream: dreamTags"+ dream.getTags().toString());
+
         dreamDAO.open();
         insertedDream = dreamDAO.createDream(dream);
         dreamDAO.close();

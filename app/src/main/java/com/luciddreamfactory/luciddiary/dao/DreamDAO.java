@@ -11,7 +11,6 @@ import com.luciddreamfactory.luciddiary.model.Dream;
 import com.luciddreamfactory.luciddiary.model.Tag;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -102,27 +101,48 @@ public class DreamDAO {
 
     public Dream createDream(Dream dream) {
         ContentValues values = new ContentValues();
-        long insertIDDream;
-        long insertIDTag;
+        long insertDreamId;
+        ArrayList<Tag> insertedTagList = new ArrayList<>();
+        ArrayList<Long> insertTagsIDList = new ArrayList<>();
+
 
         values.put(LucidDiaryDbHelper.C_DREAM_TITLE,dream.getTitle());
         values.put(LucidDiaryDbHelper.C_DREAM_CONTENT,dream.getContent());
         values.put(LucidDiaryDbHelper.C_DREAM_DATE,dream.getDate().getTime());
-        values.put(LucidDiaryDbHelper.C_DREAM_WITHOUT_DATE, (dream.isWihtoutDate()) ? 1 : 0);  //convert true/false to 1/0
-        values.put(LucidDiaryDbHelper.C_DREAM_WITHOUT_TIME, (dream.isWihtoutTime()) ? 1 : 0);  //convert true/false to 1/0
+        values.put(LucidDiaryDbHelper.C_DREAM_WITHOUT_DATE, (dream.isWithoutDate()) ? 1 : 0);  //convert true/false to 1/0
+        values.put(LucidDiaryDbHelper.C_DREAM_WITHOUT_TIME, (dream.isWithoutTime()) ? 1 : 0);  //convert true/false to 1/0
         values.put(LucidDiaryDbHelper.C_DREAM_COLOR, dream.getColor());
 
         //TODO insert into AUdio/Drawing Table
         // values.put(LucidDiaryDbHelper.C_DREAM_AUDIO_ID,);
         // values.put(LucidDiaryDbHelper.C_DREAM_DRAWING_ID,);
 
-        insertIDDream =  database.insert(LucidDiaryDbHelper.T_DREAM, null, values);
+        insertDreamId =  database.insert(LucidDiaryDbHelper.T_DREAM, null, values);
+        Log.d(TAG, "createDream: insert ID: "+insertDreamId);
 
-        Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM, columns, LucidDiaryDbHelper.C_DREAM_ID + "="+ insertIDDream, null, null, null, null);
+        tagDAO.open();
+        //insert Tags into TAG DB and save insert IDs into List -->next step add into DreamTagAssoc Table
+        Log.d(TAG, "createDream: dream TAGS: "+ dream.getTags());
+        insertedTagList.addAll(tagDAO.createTag(dream.getTags()));
+
+        for (Tag tag : insertedTagList) {
+            insertTagsIDList.add(tag.getTagID());
+        }
+
+        dreamTagAssocDAO.open();
+        for (int i = 0; i < insertTagsIDList.size() ; i++) {
+            // add dream id and all the Tag IDs to Assoc Table
+            dreamTagAssocDAO.createDreamTagAssoc(insertDreamId,insertTagsIDList.get(i));
+        }
+
+
+        Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM, columns, LucidDiaryDbHelper.C_DREAM_ID + "="+ insertDreamId, null, null, null, null);
         cursor.moveToFirst();
         Dream insertedDream = cursorToDream(cursor);
         cursor.close();
         Log.d(TAG, "createDream: "+ dream.toString());
+        tagDAO.close();
+        dreamTagAssocDAO.close();
         return  insertedDream;
     }
 
@@ -139,20 +159,21 @@ public class DreamDAO {
 
 
         Dream dream = new Dream();
-        dream.setDreamID(columnIndexID);
+        dream.setDreamID(cursor.getLong(columnIndexID));
         dream.setTitle(cursor.getString(columnIndexTitle));
         dream.setContent(cursor.getString(columnIndexContent));
         cursor.getInt(columnIndexDate);
         dream.setDate(new Date(cursor.getLong(columnIndexDate)));
-        dream.setWihtoutDate((cursor.getInt(columnIndexWithoutDate) == 1) ? true : false); //convert 1/0 to true/false
-        dream.setWihtoutTime((cursor.getInt(columnIndexWithoutTime) == 1) ? true : false); //convert 1/0 to true/false
+        dream.setWithoutDate((cursor.getInt(columnIndexWithoutDate) == 1) ? true : false); //convert 1/0 to true/false
+        dream.setWithoutTime((cursor.getInt(columnIndexWithoutTime) == 1) ? true : false); //convert 1/0 to true/false
         dream.setColor(cursor.getInt(columnIndexColor));
         //dream.setAudio();  //TODO arraylist audio
         //dream.setDrawings(); //TODO arraylist drawing
 
         //get Tags for the dream
+        dreamTagAssocDAO.open();
         dream.setTags(dreamTagAssocDAO.searchTagTag(dream.getDreamID()));
-
+        dreamTagAssocDAO.close();
         return dream;
     }
 
