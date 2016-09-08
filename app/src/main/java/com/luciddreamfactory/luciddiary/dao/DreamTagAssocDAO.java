@@ -117,7 +117,7 @@ public class DreamTagAssocDAO {
         List<Long> queryTagIDList = new ArrayList<>();
         List<Tag> queryTagTagList;
 
-        Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM_TAG_ASSOC, columns, LucidDiaryDbHelper.C_DREAM_TAG_ASSOC_TAG_ID+"="+dreamID, null, null, null, null);
+        Cursor cursor = database.query(LucidDiaryDbHelper.T_DREAM_TAG_ASSOC, columns, LucidDiaryDbHelper.C_DREAM_TAG_ASSOC_DREAM_ID+"="+dreamID, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

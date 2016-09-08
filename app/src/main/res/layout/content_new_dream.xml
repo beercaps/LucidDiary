@@ -42,7 +42,6 @@
         android:clickable="true"
         android:cursorVisible="true"
         android:focusable="false"
-        android:textAlignment="center"
         android:paddingTop="5dp" />
     </android.support.design.widget.TextInputLayout>
 

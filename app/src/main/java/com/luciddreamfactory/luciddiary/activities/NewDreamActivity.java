@@ -2,6 +2,7 @@ package com.luciddreamfactory.luciddiary.activities;
 
 
 import android.app.TimePickerDialog;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -52,10 +53,15 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     private EditText dreamTitle;
     private EditText dreamContent;
     private EditText timePicker;
+    private TextInputLayout inputLayoutEtTitle;
+
     private Dream dream;
 
     private DreamDAO dreamDAO;
     private ArrayList<String> chipsList;
+
+    private Calendar dreamTime;
+    private Calendar dreamDate;
 
 
 
@@ -95,6 +101,7 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         colorPicker.setOnClickListener(this);
 
         timePicker = (EditText) findViewById(R.id.et_time_picker);
+        timePicker.setText("00:00");
         timePicker.setOnClickListener(this);
 
         withoutDate = (ToggleButton) findViewById(R.id.toggle_without_Date);
@@ -115,6 +122,10 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
 
         dreamContent = (EditText) findViewById(R.id.et_dreamcontent);
         dreamTitle = (EditText) findViewById(R.id.et_dream_title);
+
+        inputLayoutEtTitle = (TextInputLayout) findViewById(R.id.input_layout_et_title);
+
+
 
         //TODO FAB der sich ausklappt für FARBE, SPEECH und evtl nächster Traum erfassen
 
@@ -197,7 +208,8 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onDateChosen(Calendar calendar) {
                 datePicker.setText(getFormattedDate(calendar.getTime()));
-                dream.setDate(calendar.getTime());
+                dreamDate = calendar;
+                //dream.setDate(calendar.getTime());
             }
         });
         newFragment.show(getSupportFragmentManager(), "datePicker");
@@ -262,6 +274,7 @@ private int[] createColorArray(){
     private Date getCalendarOfYesterday(){
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -1);
+        dreamDate = cal;
         Log.d(TAG, "getCalendarOfYesterday: "+ cal.toString());
         return cal.getTime();
     }
@@ -281,12 +294,9 @@ private int[] createColorArray(){
 
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
-        cal.set(Calendar.MINUTE, timePicker.getMinute());
-        dream.setDate(cal.getTime());
+        dreamTime = Calendar.getInstance();
+        dreamTime.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
+        dreamTime.set(Calendar.MINUTE, timePicker.getMinute());
 
         StringBuilder sb = new StringBuilder();
 
@@ -305,7 +315,7 @@ private int[] createColorArray(){
 
         this.timePicker.setText(sb.toString());
 
-        Log.d(TAG, "onTimeSet: "+cal.toString());
+        Log.d(TAG, "onTimeSet: "+dreamTime.toString());
     }
 
     @Override
@@ -321,25 +331,46 @@ private int[] createColorArray(){
 
 
     private void  createTestDream(Dream dream) {
-        ArrayList<RecipientEntry> reList = new ArrayList<>();
-        Dream insertedDream;
-        dream.setTitle(dreamTitle.getText().toString().trim());
-        dream.setContent(dreamContent.getText().toString().trim());
-        reList.addAll(tokens.getAllRecipients());
+        if (dreamTitle.getText().toString().trim().equals("")) {
+            inputLayoutEtTitle.setError("This field is madatory");
+            dreamTitle.requestFocus();
+           // inputLayoutEtTitle.setErrorEnabled(false);
+        } else {
+            ArrayList<RecipientEntry> reList = new ArrayList<>();
+            Calendar cal = Calendar.getInstance();
+            cal.clear();
+            Dream insertedDream;
+            dream.setTitle(dreamTitle.getText().toString().trim());
+            dream.setContent(dreamContent.getText().toString().trim());
+            reList.addAll(tokens.getAllRecipients());
 
-        //add all tags from recipientEditTextView to dream
-        for (RecipientEntry entry: reList) {
-            Log.d(TAG, "createTestDream: relist123 "+entry.getDisplayName());
-            dream.setTag(new Tag(entry.getDisplayName().trim()));
-            Log.d(TAG, "createTestDream: tag added");
-            //dream.setTag(new Tag(entry.getDisplayName()));
+            //add all tags from recipientEditTextView to dream
+            for (RecipientEntry entry: reList) {
+                Log.d(TAG, "createTestDream: relist123 "+entry.getDisplayName());
+                dream.setTag(new Tag(entry.getDisplayName().trim()));
+                Log.d(TAG, "createTestDream: tag added");
+            }
+
+            if (dream.isWithoutDate() == false) {
+                cal.set(Calendar.DAY_OF_MONTH, dreamDate.get(Calendar.DAY_OF_MONTH));
+                cal.set(Calendar.MONTH, dreamDate.get(Calendar.MONTH));
+                cal.set(Calendar.YEAR, dreamDate.get(Calendar.YEAR));
+            }
+            if (dream.isWithoutTime() == false) {
+                if (dreamTime != null) {
+                    cal.set(Calendar.HOUR_OF_DAY,dreamTime.get(Calendar.HOUR_OF_DAY));
+                    cal.set(Calendar.MINUTE, dreamTime.get(Calendar.MINUTE));
+                }
+            }
+            dream.setDate(cal.getTime());
+
+            dreamDAO.open();
+            insertedDream = dreamDAO.createDream(dream);
+            dreamDAO.close();
+            Log.d(TAG, "createTestDream: inserted Dream "+insertedDream.toString());
+
         }
-            Log.d(TAG, "createTestDream: dreamTags"+ dream.getTags().toString());
 
-        dreamDAO.open();
-        insertedDream = dreamDAO.createDream(dream);
-        dreamDAO.close();
-        Log.d(TAG, "createTestDream: inserted Dream "+insertedDream.toString());
     }
 }
 
