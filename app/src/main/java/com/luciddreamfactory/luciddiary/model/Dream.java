@@ -14,8 +14,8 @@ public class Dream {
     private String content;
     private Date date;
     private List<Tag> tags = new ArrayList<>();
-    private List<Audio> audio = new ArrayList<>();
-    private List<Drawing> drawings = new ArrayList<>();
+    //private List<Audio> audio = new ArrayList<>();
+    //private List<Drawing> drawings = new ArrayList<>();
     private boolean withoutDate;
     private boolean wihtoutTime;
     private int color;
@@ -93,7 +93,7 @@ public class Dream {
         this.color = color;
     }
 
-    public List<Audio> getAudio() {
+   /* public List<Audio> getAudio() {
         return audio;
     }
 
@@ -107,7 +107,7 @@ public class Dream {
 
     public void setDrawings(ArrayList<Drawing> drawings) {
         this.drawings.addAll(drawings);
-    }
+    }*/
 
     public long getDreamID() {
         return dreamID;

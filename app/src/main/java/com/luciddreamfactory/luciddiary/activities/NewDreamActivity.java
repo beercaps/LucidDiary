@@ -2,8 +2,8 @@ package com.luciddreamfactory.luciddiary.activities;
 
 
 import android.app.TimePickerDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,20 +13,15 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.ScrollView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
 import com.android.colorpicker.ColorPickerDialog;
 import com.android.colorpicker.ColorPickerSwatch;
-import com.android.ex.chips.RecipientEditTextView;
-import com.android.ex.chips.RecipientEntry;
 import com.luciddreamfactory.luciddiary.R;
-import com.luciddreamfactory.luciddiary.dao.DreamDAO;
 import com.luciddreamfactory.luciddiary.interfaces.DatePickerCallBack;
 import com.luciddreamfactory.luciddiary.model.Dream;
-import com.luciddreamfactory.luciddiary.model.Tag;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,13 +31,10 @@ import java.util.Date;
 
 public class NewDreamActivity extends AppCompatActivity implements View.OnClickListener,
                                                                    CompoundButton.OnCheckedChangeListener,
-                                                                   TimePickerDialog.OnTimeSetListener,
-                                                                    RecipientEditTextView.RecipientChipAddedListener,
-                                                                    RecipientEditTextView.RecipientChipDeletedListener{
+                                                                   TimePickerDialog.OnTimeSetListener{
     private static final String TAG = NewDreamActivity.class.getSimpleName();
 
     private ImageButton colorPicker;
-    private RecipientEditTextView tokens;
     private ToggleButton withoutDate;
     private ToggleButton withoutTime;
     private Button nextDream;
@@ -54,7 +46,7 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
     private EditText timePicker;
     private Dream dream;
 
-    private DreamDAO dreamDAO;
+
     private ArrayList<String> chipsList;
 
 
@@ -82,8 +74,7 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         myToolbar.addView(actionBarButtons);
         setSupportActionBar(myToolbar);
 
-        //initialisirung DAO
-        dreamDAO = new DreamDAO(this);
+
 
         // Initialisierungen von Widgets
         datePicker = (EditText) findViewById(R.id.et_datePicker);
@@ -103,10 +94,6 @@ public class NewDreamActivity extends AppCompatActivity implements View.OnClickL
         withoutTime = (ToggleButton) findViewById(R.id.toggle_without_time);
         withoutTime.setOnCheckedChangeListener(this);
 
-        tokens = (RecipientEditTextView) findViewById(R.id.ret_tags);
-        tokens.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-      //  tokens.setAdapter(baseadapter);
-        tokens.setRecipientChipAddedListener(this);
 
         nextDream = (Button) findViewById(R.id.bt_next_dream);
         nextDream.setOnClickListener(this);
@@ -308,38 +295,19 @@ private int[] createColorArray(){
         Log.d(TAG, "onTimeSet: "+cal.toString());
     }
 
-    @Override
-    public void onRecipientChipAdded(RecipientEntry entry) {
-
-    }
-
-
-    @Override
-    public void onRecipientChipDeleted(RecipientEntry entry) {
-
-    }
 
 
     private void  createTestDream(Dream dream) {
-        ArrayList<RecipientEntry> reList = new ArrayList<>();
-        Dream insertedDream;
+       // Dream insertedDream;
         dream.setTitle(dreamTitle.getText().toString().trim());
         dream.setContent(dreamContent.getText().toString().trim());
-        reList.addAll(tokens.getAllRecipients());
 
-        //add all tags from recipientEditTextView to dream
-        for (RecipientEntry entry: reList) {
-            Log.d(TAG, "createTestDream: relist123 "+entry.getDisplayName());
-            dream.setTag(new Tag(entry.getDisplayName().trim()));
-            Log.d(TAG, "createTestDream: tag added");
-            //dream.setTag(new Tag(entry.getDisplayName()));
-        }
             Log.d(TAG, "createTestDream: dreamTags"+ dream.getTags().toString());
 
-        dreamDAO.open();
-        insertedDream = dreamDAO.createDream(dream);
-        dreamDAO.close();
-        Log.d(TAG, "createTestDream: inserted Dream "+insertedDream.toString());
+       // dreamDAO.open();
+       // insertedDream = dreamDAO.createDream(dream);
+        //dreamDAO.close();
+      //  Log.d(TAG, "createTestDream: inserted Dream "+insertedDream.toString());
     }
 }
 
